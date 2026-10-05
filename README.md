@@ -57,7 +57,28 @@ page := ratelimit.NewLimiter(10, time.Minute, ratelimit.WithBackend(backend))
 
 The default memory backend is per-process state: right for a single node, not
 a distributed limiter. Implement the two-method `Backend` interface
-(`Allow(key, max, window) bool`, `Reset()`) to plug in Redis or another store.
+(`Allow(key, max, window) bool`, `Reset()`) to plug in another store.
+
+### Redis backend
+
+`NewRedisBackend(client, prefix)` ships a Redis backend (go-redis v9): counters
+live at `<prefix>:<window seconds>:<key>` (default prefix `ratelimit`), bumped
+by an atomic INCR + EXPIRE Lua script. It fails open when Redis is unreachable.
+
+```go
+rdb := redis.NewClient(&redis.Options{Addr: "localhost:6379"})
+backend := ratelimit.NewRedisBackend(rdb, "ratelimit")
+
+api  := ratelimit.NewLimiter(10, time.Minute, ratelimit.WithBackend(backend), ...)
+page := ratelimit.NewLimiter(10, time.Minute, ratelimit.WithBackend(backend)) // shared budget
+```
+
+`(*RedisBackend).Reset()` deletes every key under the prefix (tests and ops).
+
+Note: rules that share a backend, a window length **and** a key extractor share
+one counter. That is the point for route pairs enforcing a combined budget, but
+independent rules must namespace their keys, e.g. `WithKeyFunc(func(c) string {
+return "search:" + ratelimit.ByIP(c) })`.
 
 ## Development
 
