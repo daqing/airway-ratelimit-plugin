@@ -1,4 +1,4 @@
-# airway-ratelimit
+# airway-ratelimit-plugin
 
 Fixed-window rate-limiting middleware for Gin, built for
 [Airway](https://github.com/daqing/airway) applications but usable in any Gin
@@ -9,7 +9,7 @@ server.
 ## Usage
 
 ```go
-import "github.com/daqing/airway-ratelimit"
+import "github.com/daqing/airway-ratelimit-plugin"
 
 // 60 requests per minute per client IP, plain-text 429 on rejection.
 search := ratelimit.NewLimiter(60, time.Minute)

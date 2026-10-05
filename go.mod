@@ -1,4 +1,4 @@
-module github.com/daqing/airway-ratelimit
+module github.com/daqing/airway-ratelimit-plugin
 
 go 1.27.1
 

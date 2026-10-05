@@ -1,4 +1,4 @@
-# airway-ratelimit
+# airway-ratelimit-plugin
 
 为 [Airway](https://github.com/daqing/airway) 应用打造的固定窗口限流 Gin
 中间件,也可用于任何 Gin 服务。
@@ -8,7 +8,7 @@
 ## 用法
 
 ```go
-import "github.com/daqing/airway-ratelimit"
+import "github.com/daqing/airway-ratelimit-plugin"
 
 // 每个客户端 IP 每分钟 60 次,超限返回纯文本 429。
 search := ratelimit.NewLimiter(60, time.Minute)
